@@ -17,175 +17,111 @@ FitNode helps job seekers spend less time repeating application work and more ti
 
 After uploading a resume, users can review ranked job matches, inspect match scores, tailor their resume for a specific role, and generate a cold email for recruiter outreach. A separate Tailor Chat also lets users paste any job description and create targeted application content on demand.
 
-Features
+## Features
 
-Resume upload: Upload a PDF or DOCX resume up to 5 MB.
+* 📄 **Resume Upload** — Upload PDF/DOCX resumes up to 5 MB.
+* 🎯 **Personalized Job Search** — Discover roles based on your resume and preferences.
+* 🔎 **Multiple Job Sources** — Search listings from Adzuna and USAJobs.
+* 📊 **Match Scoring** — Rank jobs by relevance to your experience.
+* ⚙️ **Smart Filters** — Filter by role, location, work mode, keywords, and match score.
+* ✨ **AI Resume Tailoring** — Generate role-specific resume drafts.
+* 📧 **Recruiter Outreach** — Create personalized cold emails for opportunities.
+* 💬 **Tailor Chat** — Paste any job description to generate a tailored resume and email.
+* 📈 **Dashboard** — Track matches, scores, and generated drafts.
+* 🔐 **Authentication** — Secure sign-up, sign-in, password recovery, and sessions.
 
-Personalized job discovery: Find relevant openings using the user's resume and search preferences.
+## How It Works
 
-Multiple job sources: Surface real listings from Adzuna and USAJobs.
+**Upload Resume → Set Preferences → Find & Score Jobs → Review Matches → Tailor Resume → Contact Recruiters**
 
-Match scoring: Rank roles by their relevance to the user's experience and preferences.
+1. Create an account and set your job preferences.
+2. Upload your resume.
+3. FitNode finds and scores relevant jobs.
+4. Review matches and visit original listings.
+5. Generate tailored resumes and recruiter emails.
+6. Use **Tailor Chat** for jobs found outside FitNode.
 
-Search filters: Configure target roles, location, work mode, keywords, and a minimum match score.
+## Tech Stack
 
-AI-tailored resumes: Generate a role-specific resume draft directly from a job match.
+* **Frontend:** Next.js, React, Tailwind CSS
+* **Backend & Auth:** Supabase
+* **Job Sources:** Adzuna, USAJobs
+* **AI:** Server-side AI generation
+* **Deployment:** Vercel
 
-Recruiter outreach: Create a tailored cold email for a selected opportunity.
+## Main Areas
 
-Tailor Chat: Paste a full job description to generate a tailored resume and outreach email.
+| Area        | Purpose                                   |
+| ----------- | ----------------------------------------- |
+| Dashboard   | Resume and job-search overview            |
+| Job Matches | Ranked jobs, scores, and generated drafts |
+| Tailor Chat | Resume and email generation               |
+| Settings    | Search preferences and filters            |
+| Onboarding  | Initial job-search setup                  |
 
-Personal dashboard: Track total matches, average match score, and generated drafts.
+## Getting Started
 
-Authentication: Secure sign-up, sign-in, password recovery, and account sessions.
+### Prerequisites
 
-How It Works
+* Node.js 20+
+* npm
+* Supabase project
+* Job-data and AI service credentials
 
-flowchart TD
-    A[Upload resume] --> B[Set job preferences]
-    B --> C[Find and rank matching roles]
-    C --> D[Review job matches]
-    D --> E[Generate tailored resume]
-    D --> F[Draft recruiter email]
+### Installation
 
-Create an account or sign in.
-
-Select target roles, preferred location, work arrangement, and match threshold.
-
-Upload a resume in PDF or DOCX format.
-
-Let FitNode find and score relevant job postings.
-
-Open a match to visit the original listing, tailor the resume, or draft a cold email.
-
-Use Tailor Chat when working with a job description found outside FitNode.
-
-Tech Stack
-
-Area
-
-Technology
-
-Application
-
-Next.js, React
-
-Styling
-
-Tailwind CSS
-
-Authentication and data
-
-Supabase
-
-Job data
-
-Adzuna, USAJobs
-
-Deployment
-
-Vercel
-
-AI generation is handled through server-side application routes so provider credentials and prompts remain outside the browser.
-
-Main Application Areas
-
-Area
-
-Purpose
-
-Dashboard
-
-Resume management and application activity summary
-
-Job Matches
-
-Ranked roles, match scores, original job links, and generated drafts
-
-Tailor Chat
-
-On-demand resume and cold-email generation from a pasted job description
-
-Settings
-
-Roles, keywords, location, work mode, and minimum-score preferences
-
-Onboarding
-
-Initial job-search preference setup
-
-Getting Started
-
-Prerequisites
-
-Node.js 20 or later
-
-npm
-
-A Supabase project
-
-Credentials for the configured job-data and AI services
-
-Installation
-
-git clone <your-repository-url>
+```bash
+git clone <repository-url>
 cd fitnode
 npm install
-
-Create a local environment file from the repository's example, then add the required Supabase, job-source, and AI-provider credentials.
-
 cp .env.example .env.local
+```
 
-Start the development server:
+Add the required environment variables, then run:
 
+```bash
 npm run dev
+```
 
-Open http://localhost:3000 in your browser.
+Open **http://localhost:3000**
 
-Keep service-role keys, job API credentials, and AI-provider secrets in server-only environment variables. Only explicitly public values should use a browser-exposed prefix.
+### Available Scripts
 
-Available Scripts
+```bash
+npm run dev      # Development server
+npm run build    # Production build
+npm run start    # Start production build
+npm run lint     # Run lint checks
+```
 
-npm run dev      # Start the local development server
-npm run build    # Create a production build
-npm run start    # Run the production build
-npm run lint     # Check the codebase for lint issues
+## Project Structure
 
-Project Structure
-
+```text
 fitnode/
-├── app/          # Pages, layouts, and server-side API routes
-├── components/   # Reusable interface components
-├── lib/          # Supabase clients and shared application utilities
+├── app/          # Pages and API routes
+├── components/   # Reusable UI components
+├── lib/          # Supabase and shared utilities
 ├── public/       # Static assets
 └── README.md
+```
 
-Privacy and Security
+## Privacy & Security
 
-Resume files may contain sensitive personal information and should only be accessible to their owner.
+* Resume files are restricted to their owners.
+* Validate file types and sizes on client and server.
+* Keep API keys and service-role credentials server-side.
+* Use Row Level Security for user data.
+* Avoid logging resumes, application materials, or authentication tokens.
 
-Validate file type and size on both the client and server.
+## Future Improvements
 
-Keep privileged Supabase and third-party API credentials server-side.
+* Saved jobs and application tracking
+* Resume version history
+* Cover-letter generation
+* Recruiter/company research
+* Interview preparation
+* More job-board integrations
 
-Apply row-level security to user-owned data.
+## Live Demo
 
-Avoid logging resume content, generated application materials, or authentication tokens.
-
-Future Improvements
-
-Saved jobs and application-status tracking
-
-Resume version history and draft comparison
-
-Cover-letter generation
-
-Recruiter and company research
-
-Interview-preparation suggestions based on each role
-
-Additional job-board integrations
-
-Live Demo
-
-Try FitNode at fitnode.vercel.app.
+**[fitnode.vercel.app](https://fitnode.vercel.app/)**
