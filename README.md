@@ -1,36 +1,191 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+FitNode
 
-## Getting Started
+<div align="center">
+  <img src="public/logo.png" alt="FitNode logo" width="110" />
 
-First, run the development server:
+Your AI copilot for the job hunt.
 
-```bash
+Upload your resume once, discover relevant roles, generate tailored resumes, and draft recruiter outreach from one focused workspace.
+
+Live App
+
+</div>
+
+Overview
+
+FitNode helps job seekers spend less time repeating application work and more time preparing for interviews. It combines resume-based job matching with customizable search preferences and AI-assisted application materials.
+
+After uploading a resume, users can review ranked job matches, inspect match scores, tailor their resume for a specific role, and generate a cold email for recruiter outreach. A separate Tailor Chat also lets users paste any job description and create targeted application content on demand.
+
+Features
+
+Resume upload: Upload a PDF or DOCX resume up to 5 MB.
+
+Personalized job discovery: Find relevant openings using the user's resume and search preferences.
+
+Multiple job sources: Surface real listings from Adzuna and USAJobs.
+
+Match scoring: Rank roles by their relevance to the user's experience and preferences.
+
+Search filters: Configure target roles, location, work mode, keywords, and a minimum match score.
+
+AI-tailored resumes: Generate a role-specific resume draft directly from a job match.
+
+Recruiter outreach: Create a tailored cold email for a selected opportunity.
+
+Tailor Chat: Paste a full job description to generate a tailored resume and outreach email.
+
+Personal dashboard: Track total matches, average match score, and generated drafts.
+
+Authentication: Secure sign-up, sign-in, password recovery, and account sessions.
+
+How It Works
+
+flowchart TD
+    A[Upload resume] --> B[Set job preferences]
+    B --> C[Find and rank matching roles]
+    C --> D[Review job matches]
+    D --> E[Generate tailored resume]
+    D --> F[Draft recruiter email]
+
+Create an account or sign in.
+
+Select target roles, preferred location, work arrangement, and match threshold.
+
+Upload a resume in PDF or DOCX format.
+
+Let FitNode find and score relevant job postings.
+
+Open a match to visit the original listing, tailor the resume, or draft a cold email.
+
+Use Tailor Chat when working with a job description found outside FitNode.
+
+Tech Stack
+
+Area
+
+Technology
+
+Application
+
+Next.js, React
+
+Styling
+
+Tailwind CSS
+
+Authentication and data
+
+Supabase
+
+Job data
+
+Adzuna, USAJobs
+
+Deployment
+
+Vercel
+
+AI generation is handled through server-side application routes so provider credentials and prompts remain outside the browser.
+
+Main Application Areas
+
+Area
+
+Purpose
+
+Dashboard
+
+Resume management and application activity summary
+
+Job Matches
+
+Ranked roles, match scores, original job links, and generated drafts
+
+Tailor Chat
+
+On-demand resume and cold-email generation from a pasted job description
+
+Settings
+
+Roles, keywords, location, work mode, and minimum-score preferences
+
+Onboarding
+
+Initial job-search preference setup
+
+Getting Started
+
+Prerequisites
+
+Node.js 20 or later
+
+npm
+
+A Supabase project
+
+Credentials for the configured job-data and AI services
+
+Installation
+
+git clone <your-repository-url>
+cd fitnode
+npm install
+
+Create a local environment file from the repository's example, then add the required Supabase, job-source, and AI-provider credentials.
+
+cp .env.example .env.local
+
+Start the development server:
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Keep service-role keys, job API credentials, and AI-provider secrets in server-only environment variables. Only explicitly public values should use a browser-exposed prefix.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Available Scripts
 
-## Learn More
+npm run dev      # Start the local development server
+npm run build    # Create a production build
+npm run start    # Run the production build
+npm run lint     # Check the codebase for lint issues
 
-To learn more about Next.js, take a look at the following resources:
+Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+fitnode/
+├── app/          # Pages, layouts, and server-side API routes
+├── components/   # Reusable interface components
+├── lib/          # Supabase clients and shared application utilities
+├── public/       # Static assets
+└── README.md
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Privacy and Security
 
-## Deploy on Vercel
+Resume files may contain sensitive personal information and should only be accessible to their owner.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Validate file type and size on both the client and server.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Keep privileged Supabase and third-party API credentials server-side.
+
+Apply row-level security to user-owned data.
+
+Avoid logging resume content, generated application materials, or authentication tokens.
+
+Future Improvements
+
+Saved jobs and application-status tracking
+
+Resume version history and draft comparison
+
+Cover-letter generation
+
+Recruiter and company research
+
+Interview-preparation suggestions based on each role
+
+Additional job-board integrations
+
+Live Demo
+
+Try FitNode at fitnode.vercel.app.
