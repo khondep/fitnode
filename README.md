@@ -1,5 +1,5 @@
 FitNode
-
+---
 <div align="center">
   <img src="public/logo.png" alt="FitNode logo" width="110" />
 
@@ -11,7 +11,7 @@ Live App
 
 </div>
 
-Overview
+##Overview
 
 FitNode helps job seekers spend less time repeating application work and more time preparing for interviews. It combines resume-based job matching with customizable search preferences and AI-assisted application materials.
 
