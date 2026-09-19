@@ -12,6 +12,9 @@ const navItems = [
   { href: "/settings", label: "Settings" },
 ];
 
+const AUTH_EXEMPT_PATHS = ["/login", "/reset-password", "/auth/confirm"];
+const ONBOARDING_EXEMPT_PATHS = ["/onboarding", "/welcome", "/login", "/reset-password", "/auth/confirm"];
+
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -19,30 +22,33 @@ export default function Sidebar() {
 
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
   const [onboarded, setOnboarded] = useState(true);
-  
+  const [hasCheckedOnboarding, setHasCheckedOnboarding] = useState(false);
+
   useEffect(() => {
-    if (!loading && !user && pathname !== "/login" && pathname !== "/reset-password") {
+    if (!loading && !user && !AUTH_EXEMPT_PATHS.includes(pathname)) {
       router.push("/login");
       return;
     }
-  
-    if (!loading && user) {
+
+    if (!loading && user && !hasCheckedOnboarding) {
       fetch("/api/settings")
         .then((res) => res.json())
         .then((data) => {
           const isOnboarded = data.settings?.onboarded ?? false;
           setOnboarded(isOnboarded);
           setCheckingOnboarding(false);
-  
-          const exemptPaths = ["/onboarding", "/welcome", "/login", "/reset-password"];
-          if (!isOnboarded && !exemptPaths.includes(pathname)) {
+          setHasCheckedOnboarding(true);
+
+          if (!isOnboarded && !ONBOARDING_EXEMPT_PATHS.includes(pathname)) {
             router.push("/onboarding");
           }
         });
+    } else if (!loading && user && hasCheckedOnboarding) {
+      setCheckingOnboarding(false);
     }
-  }, [loading, user, pathname, router]);
+  }, [loading, user, pathname, router, hasCheckedOnboarding]);
 
-  if (pathname === "/login" || pathname === "/reset-password") return null;
+  if (AUTH_EXEMPT_PATHS.includes(pathname)) return null;
 
   if (loading || !user || checkingOnboarding) {
     return (
@@ -58,20 +64,20 @@ export default function Sidebar() {
   }
 
   return (
-<aside className="w-72 min-h-screen border-r border-gray-800 p-6 flex flex-col bg-black">
-<div className="flex items-center gap-3 mb-10 px-2">
-  <img src="/logo.png" alt="FitNode" className="w-14 h-14 object-contain" />
-  <span className="font-bold text-3xl text-white">FitNode</span>
-</div>
+    <aside className="w-72 min-h-screen border-r border-gray-800 p-6 flex flex-col bg-black">
+      <div className="flex items-center gap-3 mb-10 px-2">
+        <img src="/logo.png" alt="FitNode" className="w-14 h-14 object-contain" />
+        <span className="font-bold text-3xl text-white">FitNode</span>
+      </div>
 
       <nav className="flex flex-col gap-1 flex-1">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link
-  key={item.href}
-  href={item.href}
-  className={`px-4 py-2.5 rounded-lg text-base transition-colors ${
+              key={item.href}
+              href={item.href}
+              className={`px-4 py-2.5 rounded-lg text-base transition-colors ${
                 isActive
                   ? "bg-white text-black font-medium"
                   : "text-gray-300 hover:bg-gray-800"

@@ -5,15 +5,33 @@ import { useRouter } from "next/navigation";
 
 const WORK_MODES = ["Remote", "Hybrid", "On-site"];
 const ROLE_OPTIONS = ["Full Stack Developer", "Software Engineer", "Frontend Developer", "Backend Developer"];
+const CITY_OPTIONS = [
+  "New York, NY",
+  "San Francisco, CA",
+  "Boston, MA",
+  "Seattle, WA",
+  "Austin, TX",
+  "Chicago, IL",
+  "Washington, DC",
+  "Los Angeles, CA",
+  "Denver, CO",
+  "Atlanta, GA",
+  "Remote",
+];
 
 export default function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [keywords, setKeywords] = useState<string[]>([]);
   const [location, setLocation] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [workModes, setWorkModes] = useState<string[]>([]);
   const [minMatchScore, setMinMatchScore] = useState(40);
   const [saving, setSaving] = useState(false);
   const router = useRouter();
+
+  const filteredCities = CITY_OPTIONS.filter((city) =>
+    city.toLowerCase().includes(location.toLowerCase())
+  );
 
   function toggleKeyword(role: string) {
     setKeywords((prev) =>
@@ -67,15 +85,39 @@ export default function OnboardingPage() {
     },
     {
       title: "Where are you looking?",
-      subtitle: "City, state, or leave blank for anywhere.",
+      subtitle: "Type a city, or leave blank for anywhere.",
       content: (
-        <input
-          type="text"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          placeholder="e.g. Boston, MA"
-          className="w-full bg-gray-900 border border-gray-800 rounded-lg p-4 text-base"
-        />
+        <div className="relative">
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => {
+              setLocation(e.target.value);
+              setShowSuggestions(true);
+            }}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+            placeholder="e.g. Boston, MA"
+            className="w-full bg-gray-900 border border-gray-800 rounded-lg p-4 text-base focus:outline-none focus:border-gray-500"
+          />
+
+          {showSuggestions && location.length > 0 && filteredCities.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-gray-900 border border-gray-800 rounded-lg overflow-hidden z-10">
+              {filteredCities.map((city) => (
+                <button
+                  key={city}
+                  onClick={() => {
+                    setLocation(city);
+                    setShowSuggestions(false);
+                  }}
+                  className="w-full text-left px-4 py-3 text-sm hover:bg-gray-800 transition-colors"
+                >
+                  {city}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       ),
     },
     {
