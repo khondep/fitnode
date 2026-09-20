@@ -9,6 +9,7 @@ export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [stats, setStats] = useState({ matchCount: 0, avgScore: 0 });
   const [analytics, setAnalytics] = useState<{
     matchDistribution: { name: string; value: number }[];
@@ -38,20 +39,28 @@ export default function Home() {
   async function handleUpload() {
     if (!file) return;
     setUploading(true);
+    setUploadError(null);
 
-    const formData = new FormData();
-    formData.append("file", file);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
 
-    const res = await fetch("/api/resume/upload", {
-      method: "POST",
-      body: formData,
-    });
-    const data = await res.json();
+      const res = await fetch("/api/resume/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
 
-    if (data.success) {
-      setUploaded(true);
-      fetch("/api/pipeline/run", { method: "POST" });
+      if (data.success) {
+        setUploaded(true);
+        fetch("/api/pipeline/run", { method: "POST" });
+      } else {
+        setUploadError(data.error || "Upload failed. Please try again.");
+      }
+    } catch (err) {
+      setUploadError("Upload failed. Please check your connection and try again.");
     }
+
     setUploading(false);
   }
 
@@ -161,7 +170,13 @@ export default function Home() {
             <Upload className="w-6 h-6 text-gray-400" />
           </div>
           <p className="text-lg font-medium mb-1">
-            {file ? file.name : "Drag & drop your resume"}
+            {uploading
+              ? "Uploading and processing your resume..."
+              : uploaded
+              ? "✓ Resume uploaded successfully"
+              : file
+              ? file.name
+              : "Drag & drop your resume"}
           </p>
           <p className="text-sm text-gray-500 mb-6">PDF or DOCX, up to 5 MB</p>
 
@@ -175,7 +190,7 @@ export default function Home() {
             />
           </label>
 
-          {file && (
+          {file && !uploaded && (
             <button
               onClick={handleUpload}
               disabled={uploading}
@@ -185,6 +200,10 @@ export default function Home() {
             </button>
           )}
         </div>
+
+        {uploadError && (
+          <p className="text-red-400 text-sm mt-4 text-center">{uploadError}</p>
+        )}
 
         {uploaded && (
           <div className="mt-4 pt-4 border-t border-gray-800">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { MapPin, Building2, ExternalLink, FileText, Mail, RefreshCw } from "lucide-react";
 
 type Match = {
   id: string;
@@ -41,9 +41,7 @@ export default function MatchesPage() {
 
   async function handleRefresh() {
     setPipelineRunning(true);
-    const res = await fetch("/api/pipeline/run", { method: "POST" });
-    const data = await res.json();
-    console.log("Pipeline result:", data);
+    await fetch("/api/pipeline/run", { method: "POST" });
     loadMatches();
     setPipelineRunning(false);
   }
@@ -88,105 +86,146 @@ export default function MatchesPage() {
     }
   }
 
+  function scoreColor(score: number) {
+    const pct = score * 100;
+    if (pct >= 70) return "text-green-400 bg-green-400/10";
+    if (pct >= 50) return "text-cyan-400 bg-cyan-400/10";
+    return "text-gray-400 bg-gray-400/10";
+  }
+
   if (loading) {
-    return <main className="p-8">Loading matches...</main>;
+    return (
+      <main className="w-full">
+        <p className="text-gray-500">Loading matches...</p>
+      </main>
+    );
   }
 
   return (
-    <main className="max-w-3xl mx-auto">
-      <Link href="/" className="text-sm text-gray-500 underline mb-4 inline-block">
-        ← Back to upload
-      </Link>
+    <main className="w-full">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold mb-1">Your Job Matches</h1>
+          <p className="text-gray-400">
+            {matches.length} role{matches.length !== 1 ? "s" : ""} ranked by how well they fit your resume.
+          </p>
+        </div>
 
-      <h1 className="text-2xl font-bold mb-4">Your Job Matches</h1>
-
-      <button
-        onClick={handleRefresh}
-        disabled={pipelineRunning}
-        className="text-sm bg-white text-black px-4 py-2 rounded-lg font-medium disabled:opacity-50 mb-6"
-      >
-        {pipelineRunning ? "Finding matches... (this can take ~30s)" : "Refresh Matches"}
-      </button>
-
-      <div className="flex flex-col gap-4">
-        {matches.map((match) => {
-          const isExpanded = expandedId === match.id;
-          const resumeLoading = actionLoading === match.id + "-resume";
-          const emailLoading = actionLoading === match.id + "-email";
-
-          return (
-            <div key={match.id} className="border rounded-lg p-4">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h2 className="font-semibold text-lg">{match.job.title}</h2>
-                  <p className="text-gray-600">
-                    {match.job.company} — {match.job.location}
-                  </p>
-                  <a
-                   href={match.job.url}
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   className="inline-block bg-green-600 text-white text-sm font-medium px-4 py-1.5 rounded-lg hover:bg-green-500 transition-colors"
-                   >
-                   Apply →
-                  </a>
-                </div>
-                <span className="text-sm font-medium bg-gray-100 text-gray-900 px-2 py-1 rounded">
-                  {Math.round(match.score * 100)}% match
-                </span>
-              </div>
-
-              <div className="flex gap-2 mt-4">
-                {match.tailored_resume ? (
-                  <button
-                    onClick={() => toggleExpand(match.id, "resume")}
-                    className="text-sm border rounded px-3 py-1"
-                  >
-                    {isExpanded && expandedType === "resume" ? "Hide" : "View"} Tailored Resume
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleTailor(match.id)}
-                    disabled={resumeLoading}
-                    className="text-sm bg-black text-white rounded px-3 py-1 disabled:opacity-50"
-                  >
-                    {resumeLoading ? "Tailoring..." : "Tailor Resume"}
-                  </button>
-                )}
-
-                {match.cold_email ? (
-                  <button
-                    onClick={() => toggleExpand(match.id, "email")}
-                    className="text-sm border rounded px-3 py-1"
-                  >
-                    {isExpanded && expandedType === "email" ? "Hide" : "View"} Cold Email
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleColdEmail(match.id)}
-                    disabled={emailLoading}
-                    className="text-sm bg-black text-white rounded px-3 py-1 disabled:opacity-50"
-                  >
-                    {emailLoading ? "Drafting..." : "Draft Email"}
-                  </button>
-                )}
-              </div>
-
-              {isExpanded && expandedType === "resume" && match.tailored_resume && (
-                <pre className="mt-4 bg-gray-50 text-gray-900 p-4 rounded text-xs whitespace-pre-wrap max-h-96 overflow-auto">
-                  {match.tailored_resume}
-                </pre>
-              )}
-
-              {isExpanded && expandedType === "email" && match.cold_email && (
-                <pre className="mt-4 bg-gray-50 text-gray-900 p-4 rounded text-xs whitespace-pre-wrap max-h-96 overflow-auto">
-                  {match.cold_email}
-                </pre>
-              )}
-            </div>
-          );
-        })}
+        <button
+          onClick={handleRefresh}
+          disabled={pipelineRunning}
+          className="flex items-center gap-2 text-sm bg-white text-black px-5 py-2.5 rounded-lg font-medium disabled:opacity-50 hover:bg-gray-100 transition-colors"
+        >
+          <RefreshCw className={`w-4 h-4 ${pipelineRunning ? "animate-spin" : ""}`} />
+          {pipelineRunning ? "Finding matches..." : "Refresh Matches"}
+        </button>
       </div>
+
+      {matches.length === 0 ? (
+        <div className="border border-gray-800 rounded-xl p-16 text-center">
+          <p className="text-gray-400 mb-2">No matches yet.</p>
+          <p className="text-sm text-gray-600">
+            Upload a resume on the Dashboard, then click Refresh Matches.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-5">
+          {matches.map((match) => {
+            const isExpanded = expandedId === match.id;
+            const resumeLoading = actionLoading === match.id + "-resume";
+            const emailLoading = actionLoading === match.id + "-email";
+
+            return (
+              <div key={match.id} className="border border-gray-800 rounded-xl p-6">
+                <div className="flex justify-between items-start mb-3">
+                  <h2 className="font-semibold text-lg leading-snug pr-4">
+                    {match.job.title}
+                  </h2>
+                  <span
+                    className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${scoreColor(
+                      match.score
+                    )}`}
+                  >
+                    {Math.round(match.score * 100)}% match
+                  </span>
+                </div>
+
+                <div className="flex flex-col gap-1.5 text-sm text-gray-400 mb-4">
+                  <span className="flex items-center gap-2">
+                    <Building2 className="w-3.5 h-3.5" />
+                    {match.job.company}
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <MapPin className="w-3.5 h-3.5" />
+                    {match.job.location}
+                  </span>
+                </div>
+
+                <a
+                  href={match.job.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 bg-green-600 hover:bg-green-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors mb-4"
+                >
+                  Apply <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+
+                <div className="flex gap-2">
+                  {match.tailored_resume ? (
+                    <button
+                      onClick={() => toggleExpand(match.id, "resume")}
+                      className="flex items-center gap-1.5 text-sm border border-gray-700 rounded-lg px-3 py-1.5 hover:bg-gray-900 transition-colors"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      {isExpanded && expandedType === "resume" ? "Hide" : "View"} Resume
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleTailor(match.id)}
+                      disabled={resumeLoading}
+                      className="flex items-center gap-1.5 text-sm bg-gray-900 border border-gray-800 rounded-lg px-3 py-1.5 disabled:opacity-50 hover:bg-gray-800 transition-colors"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      {resumeLoading ? "Tailoring..." : "Tailor Resume"}
+                    </button>
+                  )}
+
+                  {match.cold_email ? (
+                    <button
+                      onClick={() => toggleExpand(match.id, "email")}
+                      className="flex items-center gap-1.5 text-sm border border-gray-700 rounded-lg px-3 py-1.5 hover:bg-gray-900 transition-colors"
+                    >
+                      <Mail className="w-3.5 h-3.5" />
+                      {isExpanded && expandedType === "email" ? "Hide" : "View"} Email
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleColdEmail(match.id)}
+                      disabled={emailLoading}
+                      className="flex items-center gap-1.5 text-sm bg-gray-900 border border-gray-800 rounded-lg px-3 py-1.5 disabled:opacity-50 hover:bg-gray-800 transition-colors"
+                    >
+                      <Mail className="w-3.5 h-3.5" />
+                      {emailLoading ? "Drafting..." : "Draft Email"}
+                    </button>
+                  )}
+                </div>
+
+                {isExpanded && expandedType === "resume" && match.tailored_resume && (
+                  <pre className="mt-4 bg-gray-950 text-gray-200 p-4 rounded-lg text-xs whitespace-pre-wrap max-h-80 overflow-auto border border-gray-800">
+                    {match.tailored_resume}
+                  </pre>
+                )}
+
+                {isExpanded && expandedType === "email" && match.cold_email && (
+                  <pre className="mt-4 bg-gray-950 text-gray-200 p-4 rounded-lg text-xs whitespace-pre-wrap max-h-80 overflow-auto border border-gray-800">
+                    {match.cold_email}
+                  </pre>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </main>
   );
 }
