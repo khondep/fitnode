@@ -129,7 +129,7 @@ export default function MatchesPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
           {matches.map((match) => {
             const isExpanded = expandedId === match.id;
             const resumeLoading = actionLoading === match.id + "-resume";

@@ -71,7 +71,7 @@ export default function Home() {
         Upload your resume to unlock personalized job matches and drafts.
       </p>
 
-      <div className="grid grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-8">
         <div className="border border-gray-800 rounded-xl p-8 relative">
           <div className="absolute top-6 right-6 w-9 h-9 rounded-lg bg-gray-900 flex items-center justify-center">
             <Briefcase className="w-4 h-4 text-gray-400" />
@@ -98,7 +98,7 @@ export default function Home() {
       </div>
 
       {(analytics.matchDistribution.length > 0 || analytics.sourceBreakdown.length > 0) && (
-        <div className="grid grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-8">
           <div className="border border-gray-800 rounded-xl p-8">
             <h3 className="text-gray-400 text-base mb-4">Match Quality Distribution</h3>
             <ResponsiveContainer width="100%" height={220}>
