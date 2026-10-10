@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sliders, MapPin, Briefcase, Target, Check } from "lucide-react";
+import { Sliders, MapPin, Briefcase, Target, Check, Mail } from "lucide-react";
 
 const WORK_MODES = ["Remote", "Hybrid", "On-site"];
 
@@ -14,6 +14,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
+  const [gmailStatus, setGmailStatus] = useState<"connected" | "error" | null>(null);
 
   useEffect(() => {
     fetch("/api/settings")
@@ -28,6 +29,9 @@ export default function SettingsPage() {
         }
         setLoading(false);
       });
+
+    const gmail = new URLSearchParams(window.location.search).get("gmail");
+    if (gmail === "connected" || gmail === "error") setGmailStatus(gmail);
   }, []);
 
   function addKeyword(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -192,6 +196,33 @@ export default function SettingsPage() {
             "Save filters"
           )}
         </button>
+      </div>
+
+      <div className="border border-gray-800 rounded-xl p-8 mt-6">
+        <div className="flex items-center gap-2 mb-1">
+          <Mail className="w-4 h-4 text-gray-400" />
+          <h2 className="font-semibold text-lg">Gmail connection</h2>
+        </div>
+        <p className="text-sm text-gray-500 mb-6">
+          Lets FitNode save outreach emails as drafts in your own Gmail. Nothing is sent
+          without your approval.
+        </p>
+
+        {gmailStatus === "connected" && (
+          <p className="text-green-400 text-sm mb-4">✓ Gmail connected.</p>
+        )}
+        {gmailStatus === "error" && (
+          <p className="text-red-400 text-sm mb-4">
+            Couldn't connect Gmail. Please try again.
+          </p>
+        )}
+
+        <a
+          href="/api/gmail/connect"
+          className="inline-block bg-white text-black px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors"
+        >
+          {gmailStatus === "connected" ? "Reconnect Gmail" : "Connect Gmail"}
+        </a>
       </div>
     </main>
   );

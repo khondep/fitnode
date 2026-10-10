@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
-const FULL_BLEED_PATHS = ["/login", "/onboarding", "/welcome", "/reset-password"];
+const FULL_BLEED_PATHS = ["/login", "/onboarding", "/welcome", "/reset-password", "/privacy", "/terms"];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

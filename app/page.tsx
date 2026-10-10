@@ -31,9 +31,13 @@ export default function Home() {
         setTailoredCount(matches.filter((m: any) => m.tailored_resume).length);
       });
 
-    fetch("/api/analytics/summary")
+      fetch("/api/analytics/summary")
       .then((res) => res.json())
-      .then((data) => setAnalytics(data));
+      .then((data) => {
+        if (data.matchDistribution && data.sourceBreakdown) {
+          setAnalytics(data);
+        }
+      });
   }, [uploaded]);
 
   async function handleUpload() {

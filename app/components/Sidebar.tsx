@@ -13,7 +13,7 @@ const navItems = [
   { href: "/settings", label: "Settings" },
 ];
 
-const AUTH_EXEMPT_PATHS = ["/login", "/reset-password", "/auth/confirm"];
+const AUTH_EXEMPT_PATHS = ["/login", "/reset-password", "/auth/confirm", "/privacy", "/terms"];
 const ONBOARDING_EXEMPT_PATHS = ["/onboarding", "/welcome", "/login", "/reset-password", "/auth/confirm"];
 
 export default function Sidebar() {
